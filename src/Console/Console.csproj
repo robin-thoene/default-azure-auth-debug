@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>RobinThoene.DefaultAzureAuthDebug.Console</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>daad</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
