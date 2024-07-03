@@ -85,7 +85,7 @@ if (!string.IsNullOrEmpty(arguments.ServiceBusNamespace) && !string.IsNullOrEmpt
         // Check if access to the service bus is possible.
         var serviceBusClient = new ServiceBusClient($"{arguments.ServiceBusNamespace}.servicebus.windows.net", credential);
         var serviceBusQueueReceiver = serviceBusClient.CreateReceiver(arguments.ServiceBusQueueName);
-        logger.LogInformation("Waiting for a service bus message to receive ...");
+        logger.LogInformation("Waiting for a service bus message to receive, put one in the queue for testing purpose ...");
         var message = await serviceBusQueueReceiver.ReceiveMessageAsync();
         if (message is not null)
         {
