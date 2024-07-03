@@ -23,25 +23,61 @@ logger.LogInformation("Getting credentials ...");
 if (!string.IsNullOrEmpty(arguments.StorageAccountName))
 {
     logger.LogInformation("Trying to access the storage account {0} ", arguments.StorageAccountName);
-    // Check if access to the blob storage account is possible.
-    var blobServiceClient = new BlobServiceClient(new Uri($"https://{arguments.StorageAccountName}.blob.core.windows.net"), credential);
-    logger.LogInformation(blobServiceClient.GetProperties().ToString());
+    try
+    {
+        // Check if access to the blob storage account is possible.
+        var blobServiceClient = new BlobServiceClient(new Uri($"https://{arguments.StorageAccountName}.blob.core.windows.net"), credential);
+        var blobServiceResponse = blobServiceClient.GetProperties().GetRawResponse();
+        if (blobServiceResponse.Status is 200)
+        {
+            logger.LogInformation("Access to the storage account was successful.");
+        }
+        else
+        {
+            logger.LogError("Access to the storage account failed with status code {0}", blobServiceResponse.Status);
+        }
+    }
+    catch (Exception ex)
+    {
+        if (arguments.Verbose)
+        {
+            logger.LogError("Access to the storage account failed with exception: {0}", ex.Message);
+        }
+        else
+        {
+            logger.LogError("Access to the storage account failed with exception. Use the 'verbose' argument to see the exception message.");
+        }
+    }
 }
 if (!string.IsNullOrEmpty(arguments.ServiceBusNamespace) && !string.IsNullOrEmpty(arguments.ServiceBusQueueName))
 {
-    // Check if access to the service bus is possible.
-    var serviceBusClient = new ServiceBusClient($"{arguments.ServiceBusNamespace}.servicebus.windows.net", credential);
-    var serviceBusQueueReceiver = serviceBusClient.CreateReceiver(arguments.ServiceBusQueueName);
-    logger.LogInformation("Waiting for a service bus message to receive ...");
-    var message = await serviceBusQueueReceiver.ReceiveMessageAsync();
-    if (message is not null)
+    logger.LogInformation("Trying to access service bus queue {0} ", arguments.ServiceBusQueueName);
+    try
     {
-        logger.LogInformation("Received message from the service bus with content: {0}", message.Body.ToString());
-        await serviceBusQueueReceiver.CompleteMessageAsync(message);
+        // Check if access to the service bus is possible.
+        var serviceBusClient = new ServiceBusClient($"{arguments.ServiceBusNamespace}.servicebus.windows.net", credential);
+        var serviceBusQueueReceiver = serviceBusClient.CreateReceiver(arguments.ServiceBusQueueName);
+        logger.LogInformation("Waiting for a service bus message to receive ...");
+        var message = await serviceBusQueueReceiver.ReceiveMessageAsync();
+        if (message is not null)
+        {
+            logger.LogInformation("Received message from the service bus with content: {0}", message.Body.ToString());
+        }
+        else
+        {
+            logger.LogInformation("No message available on the service bus.");
+        }
     }
-    else
+    catch (Exception ex)
     {
-        logger.LogInformation("No message available on the service bus.");
+        if (arguments.Verbose)
+        {
+            logger.LogError("Access to the service bus queue failed with exception: {0}", ex.Message);
+        }
+        else
+        {
+            logger.LogError("Access to the service bus queue failed with exception. Use the 'verbose' argument to see the exception message.");
+        }
     }
 }
 
