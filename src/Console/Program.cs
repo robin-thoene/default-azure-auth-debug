@@ -4,6 +4,7 @@ using Azure.Storage.Blobs;
 using Azure.Messaging.ServiceBus;
 using CommandLine;
 using RobinThoene.DefaultAzureAuthDebug.Console;
+using Azure.Core;
 
 // Read the cli arguments.
 var arguments = Parser.Default.ParseArguments<Options>(args).Value;
@@ -20,6 +21,33 @@ var defaultAzureCredOptions = new DefaultAzureCredentialOptions
 };
 var credential = new DefaultAzureCredential(defaultAzureCredOptions);
 logger.LogInformation("Getting credentials ...");
+try
+{
+    var tokenResponse = credential.GetToken(new TokenRequestContext(new string[] { "https://graph.microsoft.com" }));
+    if (!string.IsNullOrEmpty(tokenResponse.Token))
+    {
+        logger.LogInformation("Token was retrieved successful.");
+        if (arguments.LogToken)
+        {
+            logger.LogInformation("Your retrieved token: {0}", tokenResponse.Token);
+        }
+    }
+    else
+    {
+        logger.LogError("Could not retrieve a token using default azure credential.");
+    }
+}
+catch (Exception ex)
+{
+    if (arguments.Verbose)
+    {
+        logger.LogError("Token retrieval failed with exception: {0}", ex.Message);
+    }
+    else
+    {
+        logger.LogError("Token retrieval failed with exception. Use the 'verbose' argument to see the exception message.");
+    }
+}
 if (!string.IsNullOrEmpty(arguments.StorageAccountName))
 {
     logger.LogInformation("Trying to access the storage account {0} ", arguments.StorageAccountName);

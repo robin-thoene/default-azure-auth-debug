@@ -7,6 +7,9 @@ public class Options
     [Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages.")]
     public bool Verbose { get; set; }
 
+    [Option('t', "log-token", Required = false, HelpText = "If set, the retrieved token will be logged to the console.")]
+    public bool LogToken { get; set; }
+
     [Option(
         's',
         "storage-account-name",
