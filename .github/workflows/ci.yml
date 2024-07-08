@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: ./global.json
-          cache: true
       - name: Restore solution
         run: dotnet restore DefaultAzureAuthDebug.sln
       - name: Build solution
