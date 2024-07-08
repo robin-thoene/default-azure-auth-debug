@@ -1,4 +1,4 @@
-name: CI
+name: CI-CD
 
 on:
   pull_request:
@@ -52,7 +52,6 @@ jobs:
     name: Publish package to NuGet
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
