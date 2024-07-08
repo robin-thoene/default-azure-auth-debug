@@ -47,3 +47,19 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: dist
+
+  publish:
+    name: Publish package to NuGet
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: dist
+      - name: Publish to NuGet
+        run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
