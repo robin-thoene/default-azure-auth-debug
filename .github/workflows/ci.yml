@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build cli tool package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+          cache: true
+      - name: Restore solution
+        run: dotnet restore DefaultAzureAuthDebug.sln
+      - name: Build solution
+        run: dotnet build --no-restore --configuration Release DefaultAzureAuthDebug.sln 
+      - name: Pack the cli tool
+        run: dotnet pack --configuration Release -o ./dist -p:PackageID=RobinThoene.DefaultAzureAuthDebug.Console -p:Version=0.0.1-alpha src/Console/Console.csproj
+      - name: Publish artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: dist
