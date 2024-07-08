@@ -21,6 +21,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+      - name: Determine new version
+        uses: gittools/actions/gitversion/execute@v1.1.1
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -30,7 +41,7 @@ jobs:
       - name: Build solution
         run: dotnet build --no-restore --configuration Release ${{ env.SOLUTION }}
       - name: Pack the cli tool
-        run: dotnet pack --configuration Release -o ./dist -p:PackageID=${{ env.NUGET_PACKAGE_ID }} -p:Version=0.0.1-alpha ${{ env.CLI_TOOL_PROJ_PATH }}
+        run: dotnet pack --configuration Release -o ./dist -p:PackageID=${{ env.NUGET_PACKAGE_ID }} -p:Version=$GitVersion_NuGetVersion ${{ env.CLI_TOOL_PROJ_PATH }}
       - name: Publish artifact
         uses: actions/upload-artifact@v4
         with:
