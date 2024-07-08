@@ -8,6 +8,12 @@ on:
       - closed
   workflow_dispatch:
 
+env:
+  ARTIFACT_NAME: daad-nuget-artifact
+  NUGET_PACKAGE_ID: RobinThoene.DefaultAzureAuthDebug.Console
+  SOLUTION: DefaultAzureAuthDebug.sln
+  CLI_TOOL_PROJ_PATH: src/Console/Console.csproj
+
 jobs:
   build:
     name: Build cli tool package
@@ -20,13 +26,13 @@ jobs:
         with:
           global-json-file: ./global.json
       - name: Restore solution
-        run: dotnet restore DefaultAzureAuthDebug.sln
+        run: dotnet restore ${{ env.SOLUTION }}
       - name: Build solution
-        run: dotnet build --no-restore --configuration Release DefaultAzureAuthDebug.sln 
+        run: dotnet build --no-restore --configuration Release ${{ env.SOLUTION }}
       - name: Pack the cli tool
-        run: dotnet pack --configuration Release -o ./dist -p:PackageID=RobinThoene.DefaultAzureAuthDebug.Console -p:Version=0.0.1-alpha src/Console/Console.csproj
+        run: dotnet pack --configuration Release -o ./dist -p:PackageID=${{ env.NUGET_PACKAGE_ID }} -p:Version=0.0.1-alpha ${{ env.CLI_TOOL_PROJ_PATH }}
       - name: Publish artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifact
+          name: ${{ env.ARTIFACT_NAME }}
           path: dist
