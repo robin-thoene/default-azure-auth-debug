@@ -7,9 +7,18 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>RobinThoene.DefaultAzureAuthDebug.Console</RootNamespace>
+
+    <PackageId>RobinThoene.DefaultAzureAuthDebug.Console</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>daad</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+    <Authors>Robin Thöne</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/robin-thoene/default-azure-auth-debug</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>main</RepositoryBranch>
+    <PackageTags>Azure;Authentication;Console;Debug;Identity;.NET;Tool</PackageTags>
+    <PackageType>DotnetTool</PackageType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +28,10 @@
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
   </ItemGroup>
 
 </Project>
