@@ -21,6 +21,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ env.ARTIFACT_NAME }}
           path: dist
       - name: Publish to NuGet
